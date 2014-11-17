@@ -1,4 +1,4 @@
-import Components.ErrorPanel;
+import Components.NotifyPanel;
 
 import javax.swing.*;
 import javax.xml.bind.JAXBException;
@@ -9,7 +9,7 @@ import java.io.IOException;
  * Created by 350z6_000 on 16.10.2014.
  */
 public class Panel extends JLayeredPane implements SenderInterface {
-    private final ErrorPanel errorPanel = new ErrorPanel();
+    private final NotifyPanel notifyPanel = new NotifyPanel();
     private SenderInterface parentSender = null;
     private SenderInterface childSender = null;
 
@@ -37,14 +37,20 @@ public class Panel extends JLayeredPane implements SenderInterface {
         showError("Не удается подключиться к серверу! Проверьте настройки.");
     }
 
-    protected void showError(String error) {
-        remove(errorPanel);
-        add(errorPanel, JLayeredPane.POPUP_LAYER);
-        errorPanel.setX(getWidth());
-        errorPanel.setText(error);
-        errorPanel.open();
+    protected void showSuccess() {
+        showNotify("Успешное выполнение операции",Constants.SUCCESS_COLOR);
     }
-
+    protected void showError(String error) {
+        showNotify(error,Constants.ERROR_COLOR);
+    }
+    private void showNotify(String text,Color color) {
+        remove(notifyPanel);
+        add(notifyPanel, JLayeredPane.POPUP_LAYER);
+        notifyPanel.setX(getWidth());
+        notifyPanel.setText(text);
+        notifyPanel.setBackground(color);
+        notifyPanel.open();
+    }
     @Override
     public Packet sendMessage(Packet pack) throws IOException, JAXBException {
         return parentSender.sendMessage(pack);

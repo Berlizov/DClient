@@ -101,7 +101,7 @@ public class UserAddPanel extends Panel {
     }
 
     private void addUser() {
-        if (checkUserParameters(loginField.getText(), passField.getText())) {
+        if (User.checkLoginParameters(loginField.getText(), passField.getText())) {
             try {
                 if ((Boolean) sendMessage(new Packet(API.ADD_USER,
                         new User(loginField.getText(),
@@ -119,9 +119,5 @@ public class UserAddPanel extends Panel {
             showError("Введите данные пользователя в поля.");
         }
 
-    }
-
-    boolean checkUserParameters(String login, String password) {
-        return !((login.length() < 4) || (password.length() < 4));
     }
 }

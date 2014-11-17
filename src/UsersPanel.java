@@ -47,6 +47,7 @@ public class UsersPanel extends LeftRightPanel implements UserAddDelegate {
 
         rightPanel.setLayout(new java.awt.GridLayout());
         JScrollPane menuS = new JScrollPane(userList);
+        menuS.getVerticalScrollBar().setUnitIncrement(16);
         menuS.setBorder(null);
         menuS.setOpaque(false);
         menuS.getViewport().setOpaque(false);
@@ -58,8 +59,9 @@ public class UsersPanel extends LeftRightPanel implements UserAddDelegate {
 
     public void deleteUsers() {
         for (UserListItem anUli : uli) {
-            changeType(anUli.getLogin(), UsersTypes.NO);
+            changeType(anUli.getLogin(), UsersTypes.NO);//TODO
         }
+        updateUsers();
     }
 
     public synchronized void updateUsers() {
@@ -96,6 +98,7 @@ public class UsersPanel extends LeftRightPanel implements UserAddDelegate {
     private void changeType(String login, UsersTypes type) {
         try {
             sendMessage(new Packet(API.CHANGE_USER_TYPE, new User(login, "", type)));
+            showSuccess();
         } catch (Exception e) {
             showConnectionError();
         }
@@ -106,12 +109,6 @@ public class UsersPanel extends LeftRightPanel implements UserAddDelegate {
         rightPanel.removeAll();
     }
 
-    private void updatePanels() {
-        leftPanel.revalidate();
-        leftPanel.repaint();
-        rightPanel.revalidate();
-        rightPanel.repaint();
-    }
 
     private void openUserAddPanel() {
         clearPanels();

@@ -39,4 +39,10 @@ public class LeftRightPanel extends Panel {
         rightPanel.revalidate();
         setChildSender(p);
     }
+    protected void updatePanels() {
+        leftPanel.revalidate();
+        leftPanel.repaint();
+        rightPanel.revalidate();
+        rightPanel.repaint();
+    }
 }

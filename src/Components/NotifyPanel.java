@@ -8,14 +8,14 @@ import java.awt.event.ActionListener;
 /**
  * Created by 350z6_000 on 16.10.2014.
  */
-public class ErrorPanel extends JPanel implements ActionListener {
+public class NotifyPanel extends JPanel implements ActionListener {
     private final Timer clock = new Timer(5000, this);
     private final Timer clockA = new Timer(20, this);
     private JLabel errorLabel;
     private boolean open = false;
     private boolean close = false;
 
-    public ErrorPanel() {
+    public NotifyPanel() {
         setBounds(0, 0, 280, 60);
         showPanel();
     }
@@ -59,7 +59,7 @@ public class ErrorPanel extends JPanel implements ActionListener {
     void showPanel() {
         CButton closeButton = new CButton();
         errorLabel = new JLabel();
-        setBackground(new Color(129, 21, 4));
+        setBackground(new Color(0, 0, 0));
         errorLabel.setForeground(new Color(255, 255, 255));
         closeButton.setIcon(new ImageIcon("img/Close.png"));
         closeButton.addActionListener(new ActionListener() {
@@ -88,6 +88,7 @@ public class ErrorPanel extends JPanel implements ActionListener {
     public void setText(String error) {
         errorLabel.setText("<html>" + error + "</html>");
     }
+
 
     void close() {
         open = false;

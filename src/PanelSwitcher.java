@@ -65,6 +65,7 @@ public class PanelSwitcher implements SenderInterface {
         PrintWriter writer = new PrintWriter("settings.xml", "UTF-8");
         JAXBContext jc = JAXBContext.newInstance(PanelSwitcher.class);
         Marshaller m = jc.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true );
         m.marshal(this, writer);
         writer.close();
     }
@@ -74,7 +75,6 @@ public class PanelSwitcher implements SenderInterface {
             frame.setVisible(false);
             frame.dispose();
         }
-
             connector.close();
 
         frame = new JFrame();
@@ -103,6 +103,7 @@ public class PanelSwitcher implements SenderInterface {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setMinimumSize(new Dimension(670,290));
         frame.setSize(800, 600);
         frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
         childSender = panel;
@@ -111,11 +112,13 @@ public class PanelSwitcher implements SenderInterface {
     @Override
     public Packet sendMessage(Packet pack) throws IOException, JAXBException {
         if (pack.func == API.LOGIN) {
-            UsersTypes ut = (UsersTypes) connector.setup((String) pack.arguments[2], (Integer) pack.arguments[3], (String) pack.arguments[0], (String) pack.arguments[1], this).arguments[0];
+            Packet packT=connector.setup((String) pack.arguments[2], (Integer) pack.arguments[3], (String) pack.arguments[0], (String) pack.arguments[1], this);
+            UsersTypes ut = (UsersTypes) packT.arguments[0];
             if (ut != UsersTypes.NO) {
                 writeSettings((String) pack.arguments[2], (Integer) pack.arguments[3], (String) pack.arguments[0]);
                 openMainMenuPanel(ut);
             }
+            return packT;
         }
         return connector.sendMessage(pack);
     }

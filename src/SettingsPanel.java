@@ -12,8 +12,8 @@ interface SettingsDelegate extends SenderInterface{
     public void exit();
 }
 public class SettingsPanel extends Panel {
-    SettingsDelegate sd;
-
+    private SettingsDelegate sd;
+    private JPasswordField passField;
     public SettingsPanel(SettingsDelegate parentSender) {
         super(parentSender);
         sd=parentSender;
@@ -39,7 +39,7 @@ public class SettingsPanel extends Panel {
         JLabel helloLabel = new JLabel();
         CButton exitButton = new CButton();
         JLabel loginLabel = new JLabel();
-        JPasswordField loginField = new JPasswordField();
+        passField = new JPasswordField();
         CButton changePassButton = new CButton();
 
 
@@ -52,7 +52,7 @@ public class SettingsPanel extends Panel {
         changePassButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //todo
+                changePass();
             }
         });
         exitButton.setText("Сменить пользователя");
@@ -77,7 +77,7 @@ public class SettingsPanel extends Panel {
                                                         .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                                                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                                                                         .addComponent(loginLabel, GroupLayout.PREFERRED_SIZE, 100, Short.MAX_VALUE)
-                                                                                        .addComponent(loginField, GroupLayout.Alignment.TRAILING)
+                                                                                        .addComponent(passField, GroupLayout.Alignment.TRAILING)
                                                                         )
                                                         )
                                         )
@@ -92,7 +92,7 @@ public class SettingsPanel extends Panel {
                                         .addComponent(exitButton, GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(loginField, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(passField, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
                                         .addComponent(loginLabel))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
@@ -101,5 +101,21 @@ public class SettingsPanel extends Panel {
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+    }
+    private void changePass(){
+        if(User.checkPass(String.valueOf(passField.getPassword()))) {
+            try {
+                if ((Boolean) sendMessage(new Packet(API.CHANGE_USER_PASS, String.valueOf(passField.getPassword()))).arguments[0]) {
+                    showSuccess();
+                } else {
+                    showError("Неполучилось изменить пароль");
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                showConnectionError();
+            }
+        }else{
+            showError("Пароль не должен быть меньше 5 символов.");
+        }
     }
 }

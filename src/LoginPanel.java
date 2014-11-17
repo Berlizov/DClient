@@ -30,7 +30,7 @@ public class LoginPanel extends Panel {
     void login() {
         String login = loginField.getText();
         String password = passwordField.getText();
-        if (!checkLoginParameters(login, password)) {
+        if (!User.checkLoginParameters(login, password)) {
             showError("Проверте логин и пароль.");
             return;
         }
@@ -55,12 +55,12 @@ public class LoginPanel extends Panel {
         else
             t += d;
         settingsOpened = !settingsOpened;
+
+        ipField.setEnabled(settingsOpened);
+        portField.setEnabled(settingsOpened);
         frame.setSize(frame.getWidth(), t);
     }
 
-    boolean checkLoginParameters(String login, String password) {
-        return !((login.length() < 4) || (password.length() < 4));
-    }
 
     void showPanel() {
         JLabel helloLabel = new JLabel();
@@ -105,6 +105,8 @@ public class LoginPanel extends Panel {
         ipField.setText("121.0.0.0");
         portLabel.setText("Port");
         portField.setText("1234");
+        ipField.setEnabled(settingsOpened);
+        portField.setEnabled(settingsOpened);
 
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
