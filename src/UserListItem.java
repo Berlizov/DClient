@@ -82,8 +82,8 @@ public class UserListItem extends JComponent implements EventListener {
     }
 
     @Override
-    public void paint(Graphics g) {
-        super.paint(g);
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         g.setColor(Color.LIGHT_GRAY);
         g.drawLine(37, getHeight() - 1, getWidth(), getHeight() - 1);
     }

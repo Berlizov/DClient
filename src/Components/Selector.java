@@ -163,7 +163,7 @@ public class Selector extends JPanel {
     private void move(SelectableListItem sli,
                       ArrayList<SelectableListItem> from,
                       ArrayList<SelectableListItem> to) {
-        sli.isSelected(false);
+        sli.setSelected(false);
         from.remove(sli);
         to.add(sli);
     }

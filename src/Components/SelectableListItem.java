@@ -1,46 +1,35 @@
 package Components;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.EventListener;
 
 /**
  * Created by 350z6233 on 17.11.2014.
  */
-public class SelectableListItem extends JLabel implements EventListener {
-    private Boolean selected=false;
-    private Color selectColor =Color.BLUE;
-    private final int padding =20;
-    public SelectableListItem(String text) {
+public class SelectableListItem extends JCheckBox implements EventListener {
+    private Color selectColor = Color.BLUE;
+    private boolean showCheckBox;
+    private int padding;
+
+    public SelectableListItem(String text, boolean showCheckBox) {
         super(text);
-        Border paddingBorder = BorderFactory.createEmptyBorder(0,padding,0,0);
-        setBorder(paddingBorder);
-        p();
-        addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                selected=!selected;
-                p();
-            }
-        });
+        this.showCheckBox = showCheckBox;
+        setShowCheckBox(showCheckBox);
+        setOpaque(false);
     }
 
-    public Boolean isSelected() {
-        return selected;
+    public boolean isShowCheckBox() {
+        return showCheckBox;
     }
 
-    public void isSelected(Boolean selected) {
-        this.selected = selected;
-        p();
-    }
-
-    private void p(){
-        if(selected)
-            setForeground(Color.WHITE);
-        else
-            setForeground(Color.BLACK);
+    public void setShowCheckBox(boolean showCheckBox) {
+        this.showCheckBox = showCheckBox;
+        if (showCheckBox) {
+            padding = 37;
+        } else {
+            padding = 20;
+        }
     }
 
     public Color getSelectColor() {
@@ -52,16 +41,35 @@ public class SelectableListItem extends JLabel implements EventListener {
     }
 
     @Override
-    public void paint(Graphics g) {
+    public void paintComponent(Graphics g) {
         g.setColor(getBackground());
-        g.fillRect(0,0,getWidth(),getHeight());
-        if(selected)
-        {
+        g.fillRect(0, 0, getWidth(), getHeight());
+        if (isSelected()) {
             g.setColor(selectColor);
-            g.fillRect(0,0,getWidth(),getHeight());
+            g.fillRect(0, 0, getWidth(), getHeight());
         }
         g.setColor(Color.LIGHT_GRAY);
         g.drawLine(padding, getHeight() - 1, getWidth(), getHeight() - 1);
-        super.paint(g);
+
+        Graphics2D g2d = (Graphics2D) g;
+        if (isSelected())
+            g2d.setColor(Color.WHITE);
+        else
+            g2d.setColor(Color.BLACK);
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+        double d = g2d.getFont().createGlyphVector(g2d.getFontMetrics().getFontRenderContext(), getText()).getVisualBounds().getHeight();
+        g2d.drawString(getText(), padding, (int) ((getHeight() + d) / 2));
+        if (showCheckBox) {
+            int dd = 12;
+            g.setColor(Color.WHITE);
+            int h = (getHeight() - dd) / 2;
+            int w = (padding - dd) / 2;
+            g.fillRect(w, h, dd, dd);
+            g.setColor(Color.GRAY);
+            g.drawRect(w, h, dd, dd);
+            if (isSelected()) {
+                //todo
+            }
+        }
     }
 }

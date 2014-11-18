@@ -1,5 +1,6 @@
 import Components.CButton;
 import Components.SelectableListItem;
+import Components.SelectableListItemComboBox;
 import Components.Selector;
 
 import javax.swing.*;
@@ -21,6 +22,7 @@ public class ProjectSettingsPanel extends Panel {
     String nameOfSelectedPO = null;
     private Selector workersPanel;
     private JPanel tasksPanel;
+    private JTextField taskField;
 
     public ProjectSettingsPanel(UsersTypes type, String project, SenderInterface parentSender) {
         super(parentSender);
@@ -157,7 +159,8 @@ public class ProjectSettingsPanel extends Panel {
         CButton saveButton = new CButton();
         JLabel tasksLabel = new JLabel();
         tasksPanel = new JPanel();
-
+        taskField = new JTextField();
+        CButton addTaskButton = new CButton();
 
 
         label.setFont(new Font("Tahoma", 0, 24));
@@ -191,9 +194,8 @@ public class ProjectSettingsPanel extends Panel {
         menuS.getViewport().setOpaque(false);
         p.setBackground(Constants.FOREGROUND_COLOR);
         menuS.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        setPanelUP(p);
-        this.setLayout(new GridLayout());
-        this.add(menuS);
+
+
         JScrollPane tasksPanelS = new JScrollPane(tasksPanel);
         tasksPanelS.getVerticalScrollBar().setUnitIncrement(16);
         tasksPanelS.setBorder(null);
@@ -201,8 +203,30 @@ public class ProjectSettingsPanel extends Panel {
         tasksPanelS.getViewport().setOpaque(false);
         tasksPanelS.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         tasksPanel.setLayout(new BoxLayout(tasksPanel, BoxLayout.PAGE_AXIS));
-        GroupLayout layout = new GroupLayout(p);
+
+        addTaskButton.setText("Добавить");
+        addTaskButton.setBackgroundColor(Constants.MAIN_COLOR);
+        addTaskButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addTask();
+            }
+        });
+        GroupLayout layout = new GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(menuS, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(menuS, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        layout = new GroupLayout(p);
         p.setLayout(layout);
+
+
         layout.setHorizontalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
@@ -214,6 +238,10 @@ public class ProjectSettingsPanel extends Panel {
                                                 .addComponent(saveButton))
                                         .addComponent(tasksLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(label, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addComponent(taskField, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(addTaskButton))
                                         .addComponent(tasksPanelS, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addContainerGap())
         );
@@ -227,10 +255,13 @@ public class ProjectSettingsPanel extends Panel {
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(workersPanel, GroupLayout.PREFERRED_SIZE, 300, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(saveButton, GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE))
+                                .addComponent(saveButton, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(tasksLabel, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(taskField, GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                                        .addComponent(addTaskButton, GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(tasksPanelS, GroupLayout.PREFERRED_SIZE, 300, GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap())
@@ -246,7 +277,7 @@ public class ProjectSettingsPanel extends Panel {
             ArrayList<SelectableListItem> l = new ArrayList<>();
             if (a != null) {
                 for (User anA : a) {
-                    SelectableListItem sli = new SelectableListItem(anA.getLogin());
+                    SelectableListItem sli = new SelectableListItem(anA.getLogin(), false);
                     sli.setBackground(new Color(255, 255, 0, 20));
                     l.add(sli);
                 }
@@ -254,7 +285,7 @@ public class ProjectSettingsPanel extends Panel {
             a = sendMessage(new Packet(API.GET_USERS_BY_TYPES, UsersTypes.STAKEHOLDERS)).getArrayOfArgs(User[].class);
             if (a != null) {
                 for (User anA : a) {
-                    SelectableListItem sli = new SelectableListItem(anA.getLogin());
+                    SelectableListItem sli = new SelectableListItem(anA.getLogin(), false);
                     sli.setBackground(new Color(0, 255, 0, 20));
                     l.add(sli);
                 }
@@ -266,7 +297,7 @@ public class ProjectSettingsPanel extends Panel {
             l = new ArrayList<>();
             if (a != null) {
                 for (User anA : a) {
-                    SelectableListItem sli = new SelectableListItem(anA.getLogin());
+                    SelectableListItem sli = new SelectableListItem(anA.getLogin(), false);
                     if (anA.getType() == UsersTypes.DEVELOPER)
                         sli.setBackground(new Color(255, 255, 0, 20));
                     else
@@ -284,15 +315,18 @@ public class ProjectSettingsPanel extends Panel {
     private void updateTasks() {
         tasksPanel.removeAll();
         try {
-            User[] a = sendMessage(new Packet(API.GET_ALL_USERS_AND_TYPES)).getArrayOfArgs(User[].class);
-            for (User anA : a) {
-                final SelectableListItem l = new SelectableListItem(anA.getLogin());
-                l.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
-                l.setMinimumSize(new Dimension(Integer.MIN_VALUE, 60));
-                l.setSelectColor(Constants.MAIN_COLOR2);
-                tasksPanel.add(l);
+            Task[] tasks = sendMessage(new Packet(API.GET_PROJECT_TASKS, project)).getArrayOfArgs(Task[].class);
+            if (tasks != null) {
+                for (Task anA : tasks) {
+                    final SelectableListItemComboBox l = new SelectableListItemComboBox(anA.getName(), null, false);
+                    l.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+                    l.setMinimumSize(new Dimension(Integer.MIN_VALUE, 60));
+                    l.setSelectColor(Constants.MAIN_COLOR2);
+                    tasksPanel.add(l);
+                }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             showConnectionError();
         }
         updatePanels();
@@ -303,24 +337,42 @@ public class ProjectSettingsPanel extends Panel {
         this.repaint();
     }
 
-    public void saveProjectUsers() {
-        try{
-            ArrayList<SelectableListItem> sli=workersPanel.getSelectedItems();
-            String[] str=new String[sli.size()+1];
-            str[0]=project;
-            for(int i=1;i<str.length;i++){
-                str[i]=sli.get(i-1).getText();
+    private void saveProjectUsers() {
+        try {
+            ArrayList<SelectableListItem> sli = workersPanel.getSelectedItems();
+            String[] str = new String[sli.size() + 1];
+            str[0] = project;
+            for (int i = 1; i < str.length; i++) {
+                str[i] = sli.get(i - 1).getText();
             }
-            Packet p=new Packet(API.CHANGE_PROJECT_USERS,str);
+            Packet p = new Packet(API.CHANGE_PROJECT_USERS, str);
             p.setArguments(str);
-            if((Boolean)sendMessage(p).arguments[0]) {
+            if ((Boolean) sendMessage(p).arguments[0]) {
                 showSuccess();
-            }
-            else{
+            } else {
                 showError("Не удалось обновить пользователей проекта");
             }
             updateUsers();
-        }catch (Exception e){
+        } catch (Exception e) {
+            e.printStackTrace();
+            showConnectionError();
+        }
+    }
+
+    private void addTask() {
+        try {
+            if (Task.checkName(taskField.getText())) {
+                if ((Boolean) sendMessage(new Packet(API.ADD_PROJECT_TASK, new Task(taskField.getText(), project))).arguments[0]) {
+                    showSuccess();
+                    taskField.setText("");
+                } else {
+                    showError("Не удалось создать новую задачу в проекте");
+                }
+                updateTasks();
+            } else {
+                showError("Название задачи должно быть не меньше 5 символов");
+            }
+        } catch (Exception e) {
             e.printStackTrace();
             showConnectionError();
         }
