@@ -12,14 +12,19 @@ public class Panel extends JLayeredPane implements SenderInterface {
     private final NotifyPanel notifyPanel = new NotifyPanel();
     private SenderInterface parentSender = null;
     private SenderInterface childSender = null;
+    private JComponent panelUP ;
 
     public Panel(SenderInterface parentSender) {
         super();
+        panelUP=this;
         this.parentSender = parentSender;
         setBackground(Color.WHITE);
         setOpaque(true);
     }
 
+    public void setPanelUP(JComponent panelUP) {
+        this.panelUP = panelUP;
+    }
 
     protected SenderInterface getParentSender() {
         return parentSender;
@@ -43,9 +48,9 @@ public class Panel extends JLayeredPane implements SenderInterface {
     protected void showError(String error) {
         showNotify(error,Constants.ERROR_COLOR);
     }
-    private void showNotify(String text,Color color) {
+    protected void showNotify(String text,Color color) {
         remove(notifyPanel);
-        add(notifyPanel, JLayeredPane.POPUP_LAYER);
+        panelUP.add(notifyPanel, JLayeredPane.POPUP_LAYER);
         notifyPanel.setX(getWidth());
         notifyPanel.setText(text);
         notifyPanel.setBackground(color);

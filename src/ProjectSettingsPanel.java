@@ -1,6 +1,9 @@
 import Components.CButton;
+import Components.SelectableListItem;
+import Components.Selector;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.xml.bind.JAXBException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,6 +19,8 @@ public class ProjectSettingsPanel extends Panel {
     String project;
     UsersTypes type;
     String nameOfSelectedPO = null;
+    private Selector workersPanel;
+    private JPanel tasksPanel;
 
     public ProjectSettingsPanel(UsersTypes type, String project, SenderInterface parentSender) {
         super(parentSender);
@@ -145,45 +150,38 @@ public class ProjectSettingsPanel extends Panel {
         );
     }
 
-    private JPanel workersPanel;
-    private JPanel tasksPanel;
     private void openProductOwner() {
         JLabel label = new JLabel();
         JLabel workersLabel = new JLabel();
-        workersPanel = new JPanel();
+        workersPanel = new Selector();
+        CButton saveButton = new CButton();
         JLabel tasksLabel = new JLabel();
         tasksPanel = new JPanel();
 
-        label.setFont(new java.awt.Font("Tahoma", 0, 24));
+
+
+        label.setFont(new Font("Tahoma", 0, 24));
         label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setText(project);
 
-
+        Border border = BorderFactory.createLineBorder(Constants.MINOR_TEXT_COLOR);
         workersLabel.setText("Работники");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(workersPanel);
-        workersPanel.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 99, Short.MAX_VALUE)
-        );
+        workersPanel.setSelectColor(Constants.MAIN_COLOR);
+        workersPanel.setBackground(Constants.FOREGROUND_COLOR);
+        workersPanel.setBordersOfView(border);
+        saveButton.setText("Сохранить");
+        saveButton.setBackgroundColor(Constants.MAIN_COLOR);
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveProjectUsers();
+            }
+        });
 
         tasksLabel.setText("Задачи");
+        tasksPanel.setBorder(border);
+        tasksPanel.setBackground(Constants.FOREGROUND_COLOR);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(tasksPanel);
-        tasksPanel.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 100, Short.MAX_VALUE)
-        );
 
         JPanel p = new JPanel();
         JScrollPane menuS = new JScrollPane(p);
@@ -192,58 +190,106 @@ public class ProjectSettingsPanel extends Panel {
         menuS.setOpaque(false);
         menuS.getViewport().setOpaque(false);
         p.setBackground(Constants.FOREGROUND_COLOR);
-        menuS.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-        this.setLayout(new java.awt.GridLayout());
+        menuS.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        setPanelUP(p);
+        this.setLayout(new GridLayout());
         this.add(menuS);
         JScrollPane tasksPanelS = new JScrollPane(tasksPanel);
         tasksPanelS.getVerticalScrollBar().setUnitIncrement(16);
         tasksPanelS.setBorder(null);
         tasksPanelS.setOpaque(false);
         tasksPanelS.getViewport().setOpaque(false);
-        tasksPanelS.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        tasksPanelS.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         tasksPanel.setLayout(new BoxLayout(tasksPanel, BoxLayout.PAGE_AXIS));
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(p);
+        GroupLayout layout = new GroupLayout(p);
         p.setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(workersLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(workersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(tasksLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(label, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(tasksPanelS, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                        .addComponent(workersLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(workersPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addComponent(saveButton))
+                                        .addComponent(tasksLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(label, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(tasksPanelS, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addContainerGap())
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(label, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(workersLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(workersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tasksLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(tasksPanelS, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(label, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(workersLabel, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(workersPanel, GroupLayout.PREFERRED_SIZE, 300, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(saveButton, GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE))
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(tasksLabel, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(tasksPanelS, GroupLayout.PREFERRED_SIZE, 300, GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap())
         );
 
         updateTasks();
         updateUsers();
     }
-    private void updateUsers(){
+
+    private void updateUsers() {
+        try {
+            User[] a = sendMessage(new Packet(API.GET_USERS_BY_TYPES, UsersTypes.DEVELOPER)).getArrayOfArgs(User[].class);
+            ArrayList<SelectableListItem> l = new ArrayList<>();
+            if (a != null) {
+                for (User anA : a) {
+                    SelectableListItem sli = new SelectableListItem(anA.getLogin());
+                    sli.setBackground(new Color(255, 255, 0, 20));
+                    l.add(sli);
+                }
+            }
+            a = sendMessage(new Packet(API.GET_USERS_BY_TYPES, UsersTypes.STAKEHOLDERS)).getArrayOfArgs(User[].class);
+            if (a != null) {
+                for (User anA : a) {
+                    SelectableListItem sli = new SelectableListItem(anA.getLogin());
+                    sli.setBackground(new Color(0, 255, 0, 20));
+                    l.add(sli);
+                }
+            }
+
+            workersPanel.setSelectableElements(l);
+
+            a = sendMessage(new Packet(API.GET_PROJECT_USERS, project)).getArrayOfArgs(User[].class);
+            l = new ArrayList<>();
+            if (a != null) {
+                for (User anA : a) {
+                    SelectableListItem sli = new SelectableListItem(anA.getLogin());
+                    if (anA.getType() == UsersTypes.DEVELOPER)
+                        sli.setBackground(new Color(255, 255, 0, 20));
+                    else
+                        sli.setBackground(new Color(0, 255, 0, 20));
+                    l.add(sli);
+                }
+            }
+            workersPanel.setSelectedElements(l);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showConnectionError();
+        }
+    }
+
+    private void updateTasks() {
         tasksPanel.removeAll();
         try {
             User[] a = sendMessage(new Packet(API.GET_ALL_USERS_AND_TYPES)).getArrayOfArgs(User[].class);
             for (User anA : a) {
-                final UserListItem l = new UserListItem(anA.getLogin(), anA.getType());
+                final SelectableListItem l = new SelectableListItem(anA.getLogin());
                 l.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
                 l.setMinimumSize(new Dimension(Integer.MIN_VALUE, 60));
+                l.setSelectColor(Constants.MAIN_COLOR2);
                 tasksPanel.add(l);
             }
         } catch (Exception e) {
@@ -251,24 +297,33 @@ public class ProjectSettingsPanel extends Panel {
         }
         updatePanels();
     }
-    private void updateTasks(){
-        tasksPanel.removeAll();
-            try {
-                User[] a = sendMessage(new Packet(API.GET_ALL_USERS_AND_TYPES)).getArrayOfArgs(User[].class);
-                for (User anA : a) {
-                    final UserListItem l = new UserListItem(anA.getLogin(), anA.getType());
-                    l.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
-                    l.setMinimumSize(new Dimension(Integer.MIN_VALUE, 60));
-                    tasksPanel.add(l);
-                }
-            } catch (Exception e) {
-                showConnectionError();
-            }
-            updatePanels();
-    }
+
     private void updatePanels() {
         this.revalidate();
         this.repaint();
+    }
+
+    public void saveProjectUsers() {
+        try{
+            ArrayList<SelectableListItem> sli=workersPanel.getSelectedItems();
+            String[] str=new String[sli.size()+1];
+            str[0]=project;
+            for(int i=1;i<str.length;i++){
+                str[i]=sli.get(i-1).getText();
+            }
+            Packet p=new Packet(API.CHANGE_PROJECT_USERS,str);
+            p.setArguments(str);
+            if((Boolean)sendMessage(p).arguments[0]) {
+                showSuccess();
+            }
+            else{
+                showError("Не удалось обновить пользователей проекта");
+            }
+            updateUsers();
+        }catch (Exception e){
+            e.printStackTrace();
+            showConnectionError();
+        }
     }
 
     @Override
@@ -276,4 +331,5 @@ public class ProjectSettingsPanel extends Panel {
         super.update();
         showPanelByType();
     }
+
 }

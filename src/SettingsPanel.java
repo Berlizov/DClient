@@ -96,8 +96,7 @@ public class SettingsPanel extends Panel {
                                         .addComponent(loginLabel))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                                                .addComponent(changePassButton, GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
-                                )
+                                                .addComponent(changePassButton, GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE))
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );

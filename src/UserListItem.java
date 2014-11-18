@@ -19,7 +19,6 @@ public class UserListItem extends JComponent implements EventListener {
     }
 
     private void setDef() {
-        setBackground(Color.WHITE);
         cb = new JCheckBox();
         cb.setOpaque(false);
         login = new JLabel();
