@@ -12,7 +12,7 @@ interface SettingsDelegate extends SenderInterface{
     public void exit();
 }
 public class SettingsPanel extends Panel {
-    private SettingsDelegate sd;
+    private final SettingsDelegate sd;
     private JPasswordField passField;
     public SettingsPanel(SettingsDelegate parentSender) {
         super(parentSender);

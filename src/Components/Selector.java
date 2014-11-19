@@ -11,12 +11,12 @@ import java.util.ArrayList;
  * Created by 350z6233 on 17.11.2014.
  */
 public class Selector extends JPanel {
-    protected final CButton toLeftButton = new CButton();
-    protected final CButton toRightButton = new CButton();
-    protected final JPanel leftPanel = new JPanel();
-    protected final JPanel rightPanel = new JPanel();
-    protected final JScrollPane leftScrollPanel = setPanelScrollable(leftPanel);
-    protected final JScrollPane rightScrollPanel = setPanelScrollable(rightPanel);
+    private final CButton toLeftButton = new CButton();
+    private final CButton toRightButton = new CButton();
+    private final JPanel leftPanel = new JPanel();
+    private final JPanel rightPanel = new JPanel();
+    private final JScrollPane leftScrollPanel = setPanelScrollable(leftPanel);
+    private final JScrollPane rightScrollPanel = setPanelScrollable(rightPanel);
     private Color selectedColor = Color.BLACK;
     private ArrayList<SelectableListItem> selectedItems = new ArrayList<>();
     private ArrayList<SelectableListItem> notSelectedItems = new ArrayList<>();
@@ -132,7 +132,7 @@ public class Selector extends JPanel {
     }
 
 
-    public void update() {
+    void update() {
         leftPanel.removeAll();
         rightPanel.removeAll();
         for (SelectableListItem sli : notSelectedItems) {

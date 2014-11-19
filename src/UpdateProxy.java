@@ -4,7 +4,7 @@ import java.io.BufferedReader;
  * Created by 350z6_000 on 08.11.2014.
  */
 public class UpdateProxy extends Thread {
-    final ClientConnector cc;
+    private final ClientConnector cc;
     private final BufferedReader in;
 
     public UpdateProxy(ClientConnector cc, BufferedReader in) {

@@ -19,7 +19,7 @@ public class MainMenuPanel extends LeftRightPanel implements ProjectCreateDelega
     private final ArrayList<CButton> buttonsList;
     private String selectedProject = null;
     private Boolean openProject = false;
-    private PanelSwitcher panelSwitcher;
+    private final PanelSwitcher panelSwitcher;
 
     public MainMenuPanel(String login, UsersTypes type, PanelSwitcher parentSender) {
         super(parentSender, 200, Constants.MAIN_COLOR);

@@ -1,4 +1,5 @@
 import Components.CButton;
+import Components.SelectableListItemComboBox;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
  * Created by 350z6_000 on 18.10.2014.
  */
 public class UsersPanel extends LeftRightPanel implements UserAddDelegate {
-    private final ArrayList<UserListItem> uli = new ArrayList<>();
+    private final ArrayList<SelectableListItemComboBox> uli = new ArrayList<>();
     private final JPanel userList;
 
     public UsersPanel(SenderInterface parentSender) {
@@ -58,27 +59,35 @@ public class UsersPanel extends LeftRightPanel implements UserAddDelegate {
     }
 
     public void deleteUsers() {
-        for (UserListItem anUli : uli) {
-            changeType(anUli.getLogin(), UsersTypes.NO);//TODO
+        if(uli.size()>0) {
+            for (SelectableListItemComboBox anUli : uli) {
+                changeType(anUli.getText(), UsersTypes.NO);//TODO
+            }
+            updateUsers();
         }
-        updateUsers();
+        else{
+            showError("Нужно выделить пользователей, которых вы хотите удалить");
+        }
     }
 
     public synchronized void updateUsers() {
+            uli.clear();
             userList.removeAll();
             try {
                 User[] a = sendMessage(new Packet(API.GET_ALL_USERS_AND_TYPES)).getArrayOfArgs(User[].class);
                 for (User anA : a) {
-                    final UserListItem l = new UserListItem(anA.getLogin(), anA.getType());
+                    final SelectableListItemComboBox l = new SelectableListItemComboBox(anA.getLogin(),UsersTypes.getModel(), anA.getType().toString(),true);
                     l.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
                     l.setMinimumSize(new Dimension(Integer.MIN_VALUE, 60));
+                    l.setBackground(Constants.FOREGROUND_COLOR);
+                    l.setSelectColor(Constants.MAIN_COLOR);
                     l.addComboboxActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            changeType(l.getLogin(), l.getType());
+                            changeType(l.getText(), UsersTypes.valueOf(l.getSelectedItem()));
                         }
                     });
-                    l.addCheckboxActionListener(new ActionListener() {
+                    l.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             if (l.isSelected())

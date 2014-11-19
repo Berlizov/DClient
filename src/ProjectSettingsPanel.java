@@ -17,9 +17,9 @@ import java.util.ArrayList;
  */
 public class ProjectSettingsPanel extends Panel {
     private final JComboBox<String> projectOwnerCombobox = new JComboBox<>();
-    String project;
-    UsersTypes type;
-    String nameOfSelectedPO = null;
+    private final String project;
+    private final UsersTypes type;
+    private String nameOfSelectedPO = null;
     private Selector workersPanel;
     private JPanel tasksPanel;
     private JTextField taskField;
@@ -317,11 +317,24 @@ public class ProjectSettingsPanel extends Panel {
         try {
             Task[] tasks = sendMessage(new Packet(API.GET_PROJECT_TASKS, project)).getArrayOfArgs(Task[].class);
             if (tasks != null) {
-                for (Task anA : tasks) {
-                    final SelectableListItemComboBox l = new SelectableListItemComboBox(anA.getName(), null, false);
+                for (Task task : tasks) {
+                    final SelectableListItemComboBox l = new SelectableListItemComboBox(task.getName(), PokerCardDeck.getModel(),task.getComplexity().toString(), false);
                     l.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
                     l.setMinimumSize(new Dimension(Integer.MIN_VALUE, 60));
                     l.setSelectColor(Constants.MAIN_COLOR2);
+                    l.setBackground(Constants.FOREGROUND_COLOR);
+                    l.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            //todo
+                        }
+                    });
+                    l.addComboboxActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            setTask(new Task(l.getText(),project,PokerCardDeck.valueOf(l.getSelectedItem()),null));
+                        }
+                    });
                     tasksPanel.add(l);
                 }
             }
@@ -330,6 +343,16 @@ public class ProjectSettingsPanel extends Panel {
             showConnectionError();
         }
         updatePanels();
+    }
+    private void setTask(Task task){
+        try {
+            if((Boolean)sendMessage(new Packet(API.SET_PROJECT_TASK_COMPLEXITY, task)).arguments[0])
+                showSuccess();
+            else
+                showError("Неудалось установить сложность задачи.");
+        }catch (Exception e){
+            showConnectionError();
+        }
     }
 
     private void updatePanels() {

@@ -19,10 +19,6 @@ public class SelectableListItem extends JCheckBox implements EventListener {
         setOpaque(false);
     }
 
-    public boolean isShowCheckBox() {
-        return showCheckBox;
-    }
-
     public void setShowCheckBox(boolean showCheckBox) {
         this.showCheckBox = showCheckBox;
         if (showCheckBox) {
