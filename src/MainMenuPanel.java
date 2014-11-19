@@ -183,7 +183,7 @@ public class MainMenuPanel extends LeftRightPanel implements ProjectCreateDelega
     public void projectCreated(String projectName) {
         selectedProject = projectName;
         openProject = true;
-
+        updateProjects();
     }
 
     @Override

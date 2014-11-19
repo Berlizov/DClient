@@ -14,10 +14,12 @@ public class ProjectPanel extends LeftRightPanel implements TaskPanelDelegate {
     private final ArrayList<CButton> leftButtons = new ArrayList<>();
     private final UsersTypes type;
 
+
     public ProjectPanel(UsersTypes type, String projectName, SenderInterface parentSender) {
         super(parentSender, 60, Constants.MAIN_COLOR2);
         this.projectName = projectName;
         this.type=type;
+
 
         leftPanel.setLayout(new javax.swing.BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         if ((type == UsersTypes.PRODUCT_OWNER)||(type == UsersTypes.ADMIN)) {
@@ -28,16 +30,18 @@ public class ProjectPanel extends LeftRightPanel implements TaskPanelDelegate {
                             openProjectSettings();
                         }
                     }
-            ).doClick();
+            );
         }
-
-        addLeftButton(new ImageIcon("img/Tasks.png"), new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        selectButton((CButton) e.getSource());
+        if (type != UsersTypes.PRODUCT_OWNER) {
+            addLeftButton(new ImageIcon("img/Tasks.png"), new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            selectButton((CButton) e.getSource());
+                            openProjectTasksPanel();
+                        }
                     }
-                }
-        );
+            );
+        }
         addLeftButton(new ImageIcon("img/Star.png"), new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -52,7 +56,8 @@ public class ProjectPanel extends LeftRightPanel implements TaskPanelDelegate {
                     }
                 }
         );
-
+        showDefButtons();
+        leftButtons.get(0).doClick();
     }
 
     private CButton addLeftButton(ImageIcon icon, ActionListener al) {
@@ -60,9 +65,15 @@ public class ProjectPanel extends LeftRightPanel implements TaskPanelDelegate {
         button.setIcon(icon);
         button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
         button.addActionListener(al);
-        leftPanel.add(button);
         leftButtons.add(button);
         return button;
+    }
+    private void  showDefButtons(){
+        leftPanel.removeAll();
+        for (CButton leftButton : leftButtons) {
+            leftPanel.add(leftButton);
+        }
+        updatePanels();
     }
 
     private void selectButton(CButton b) {
@@ -72,6 +83,11 @@ public class ProjectPanel extends LeftRightPanel implements TaskPanelDelegate {
         b.setSelected(true);
     }
 
+    private void openProjectTasksPanel()
+    {
+        openPanel(new ProjectTasksPanel(type,projectName,this));
+    }
+
     private void openProjectSettings()
     {
         openPanel(new ProjectSettingsPanel(type,projectName,this));
@@ -79,34 +95,28 @@ public class ProjectPanel extends LeftRightPanel implements TaskPanelDelegate {
 
     @Override
     public void openTaskPanel(String task) {
-
-        leftPanel.removeAll();
         rightPanel.removeAll();
         TaskPanel uap = new TaskPanel(projectName,task,this);
         uap.setBackground(rightPanel.getBackground());
-        GroupLayout layout = new GroupLayout(rightPanel);
-        rightPanel.setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(uap, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(uap, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        CButton backButton = new CButton();
-        backButton.setIcon(new ImageIcon("img/Back.png"));
-        backButton.setMinimumSize(new Dimension(60, 200));
-        backButton.addActionListener(new ActionListener() {
+
+        CButton button = new CButton();
+        button.setIcon(new ImageIcon("img/Back.png"));
+        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+        button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                showDefButtons();
+                for (CButton leftButton : leftButtons) {
+                    if (leftButton.isSelected()) {
+                        leftButton.doClick();
+                        break;
+                    }
+                }
             }
         });
-        leftPanel.setLayout(new javax.swing.BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        leftPanel.add(backButton);
+        openPanel(uap);
+        leftPanel.removeAll();
+        leftPanel.add(button);
         updatePanels();
-        setChildSender(uap);
-        repaint();
     }
 }

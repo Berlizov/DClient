@@ -30,7 +30,7 @@ public class TaskPanel extends Panel {
         label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setText(project + "." + task);
         JLabel workersLabel = new JLabel();
-        workersPanel = new Selector();
+        workersPanel = new Selector("Разработчики задачи","Разработчики проекта");
         CButton saveButton = new CButton();
         JLabel tasksLabel = new JLabel();
         JPanel tasksPanel = new JPanel();
@@ -47,7 +47,7 @@ public class TaskPanel extends Panel {
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                //todo
             }
         });
 

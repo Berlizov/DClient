@@ -36,11 +36,6 @@ public class CButton extends JButton {
                 g2d.setColor(new Color(255, 255, 255, 50));
                 g2d.fillRect(0, 0, getWidth(), getHeight());
             }
-          /*  if(hasFocus()){
-                int margin=3;
-                g2d.setColor(new Color(255, 255, 255, 50));
-                g2d.drawRect(margin,margin,getWidth()-2*margin-1,getHeight()-2*margin-1);
-            }*/
             g2d.setColor(new Color(255, 255, 255));
             if (getModel().isPressed()) {
                 g2d.setColor(new Color(0, 0, 0, 100));

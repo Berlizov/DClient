@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
  * Created by 350z6233 on 18.11.2014.
  */
 public class SelectableListItemComboBox extends SelectableListItem{
-    private final JComboBox<String> combo=new JComboBox<>();
+    protected final JComboBox<String> combo=new JComboBox<>();
     public SelectableListItemComboBox(String text,String[] model, String selectedV, boolean showCheckBox) {
         this( text, model,showCheckBox);
         selectItem(selectedV);

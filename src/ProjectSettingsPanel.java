@@ -1,7 +1,4 @@
-import Components.CButton;
-import Components.SelectableListItem;
-import Components.SelectableListItemComboBox;
-import Components.Selector;
+import Components.*;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -155,7 +152,7 @@ public class ProjectSettingsPanel extends Panel {
     private void openProductOwner() {
         JLabel label = new JLabel();
         JLabel workersLabel = new JLabel();
-        workersPanel = new Selector();
+        workersPanel = new Selector("Пользователи проекта","Пользователи системы");
         CButton saveButton = new CButton();
         JLabel tasksLabel = new JLabel();
         tasksPanel = new JPanel();
@@ -318,7 +315,12 @@ public class ProjectSettingsPanel extends Panel {
             Task[] tasks = sendMessage(new Packet(API.GET_PROJECT_TASKS, project)).getArrayOfArgs(Task[].class);
             if (tasks != null) {
                 for (Task task : tasks) {
-                    final SelectableListItemComboBox l = new SelectableListItemComboBox(task.getName(), PokerCardDeck.getModel(),task.getComplexity().toString(), false);
+                    final SelectableListItemLabelComboBox l = new SelectableListItemLabelComboBox(task.getName(),task.getUserComplexity().toString(), PokerCardDeck.getModel(),task.getComplexity().toString(), false);
+                    if(task.getComplexity()!=PokerCardDeck.NOTSET)
+                    {
+                        l.setSecondLabelVisible(false);
+                    }
+                    l.setSecondLabelColor(Constants.MINOR_TEXT_COLOR);
                     l.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
                     l.setMinimumSize(new Dimension(Integer.MIN_VALUE, 60));
                     l.setSelectColor(Constants.MAIN_COLOR2);
