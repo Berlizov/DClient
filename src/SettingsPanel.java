@@ -12,11 +12,9 @@ interface SettingsDelegate extends SenderInterface{
     public void exit();
 }
 public class SettingsPanel extends Panel {
-    private final SettingsDelegate sd;
     private JPasswordField passField;
     public SettingsPanel(SettingsDelegate parentSender) {
         super(parentSender);
-        sd=parentSender;
         showPanel();
     }
 
@@ -60,7 +58,7 @@ public class SettingsPanel extends Panel {
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sd.exit();
+                ((SettingsDelegate)getParentSender()).exit();
             }
         });
         layout = new GroupLayout(panel);

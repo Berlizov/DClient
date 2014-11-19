@@ -118,7 +118,6 @@ public class UsersPanel extends LeftRightPanel implements UserAddDelegate {
         rightPanel.removeAll();
     }
 
-
     private void openUserAddPanel() {
         clearPanels();
         UserAddPanel uap = new UserAddPanel(this);

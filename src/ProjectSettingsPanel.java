@@ -24,7 +24,7 @@ public class ProjectSettingsPanel extends Panel {
     private JPanel tasksPanel;
     private JTextField taskField;
 
-    public ProjectSettingsPanel(UsersTypes type, String project, SenderInterface parentSender) {
+    public ProjectSettingsPanel(UsersTypes type, String project, TaskPanelDelegate parentSender) {
         super(parentSender);
         this.project = project;
         this.type = type;
@@ -169,7 +169,7 @@ public class ProjectSettingsPanel extends Panel {
 
         Border border = BorderFactory.createLineBorder(Constants.MINOR_TEXT_COLOR);
         workersLabel.setText("Работники");
-        workersPanel.setSelectColor(Constants.MAIN_COLOR);
+        workersPanel.setSelectColor(Constants.MAIN_COLOR2);
         workersPanel.setBackground(Constants.FOREGROUND_COLOR);
         workersPanel.setBordersOfView(border);
         saveButton.setText("Сохранить");
@@ -326,13 +326,13 @@ public class ProjectSettingsPanel extends Panel {
                     l.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            //todo
+                            openTaskPanel(l.getText());
                         }
                     });
                     l.addComboboxActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            setTask(new Task(l.getText(),project,PokerCardDeck.valueOf(l.getSelectedItem()),null));
+                            setComplexityTask(new Task(l.getText(), project, PokerCardDeck.valueOf(l.getSelectedItem()), null));
                         }
                     });
                     tasksPanel.add(l);
@@ -344,7 +344,8 @@ public class ProjectSettingsPanel extends Panel {
         }
         updatePanels();
     }
-    private void setTask(Task task){
+
+    private void setComplexityTask(Task task){
         try {
             if((Boolean)sendMessage(new Packet(API.SET_PROJECT_TASK_COMPLEXITY, task)).arguments[0])
                 showSuccess();
@@ -399,6 +400,10 @@ public class ProjectSettingsPanel extends Panel {
             e.printStackTrace();
             showConnectionError();
         }
+    }
+
+    private void openTaskPanel(String taskName){
+        ((TaskPanelDelegate)getParentSender()).openTaskPanel(taskName);
     }
 
     @Override

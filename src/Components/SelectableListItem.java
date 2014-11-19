@@ -44,6 +44,11 @@ public class SelectableListItem extends JCheckBox implements EventListener {
             g.setColor(selectColor);
             g.fillRect(0, 0, getWidth(), getHeight());
         }
+        if (getModel().isRollover()) {
+            Color c=new Color(selectColor.getRed(),selectColor.getGreen(),selectColor.getBlue(),20);
+            g.setColor(c);
+            g.fillRect(0, 0, getWidth(), getHeight());
+        }
         g.setColor(Color.LIGHT_GRAY);
         g.drawLine(padding, getHeight() - 1, getWidth(), getHeight() - 1);
 
@@ -64,7 +69,8 @@ public class SelectableListItem extends JCheckBox implements EventListener {
             g.setColor(Color.GRAY);
             g.drawRect(w, h, dd, dd);
             if (isSelected()) {
-                //todo
+                g.drawLine(w, h + dd / 2, w + dd / 2, h + dd);
+                g.drawLine(w+dd/2, h+dd, w+dd, h);
             }
         }
     }

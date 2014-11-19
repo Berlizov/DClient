@@ -13,14 +13,13 @@ interface UserAddDelegate extends SenderInterface {
 }
 
 public class UserAddPanel extends Panel {
-    private final UserAddDelegate uad;
+
     private JTextField loginField;
     private JTextField passField;
     private JComboBox<UsersTypes> typeField;
 
     public UserAddPanel(UserAddDelegate parentSender) {
         super(parentSender);
-        uad = parentSender;
         showPanel();
     }
 
@@ -107,7 +106,7 @@ public class UserAddPanel extends Panel {
                         new User(loginField.getText(),
                                 passField.getText(),
                                 (UsersTypes) typeField.getSelectedItem()))).arguments[0]) {
-                    uad.userAdded();
+                    ((UserAddDelegate)getParentSender()).userAdded();
                 } else {
                     showError("Не удалось создать пользователя с такими параметрами.");
                 }

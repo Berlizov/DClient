@@ -15,11 +15,9 @@ interface ProjectCreateDelegate extends SenderInterface {
 public class ProjectCreatePanel extends Panel {
     private final JTextField projectTextField = new JTextField();
     private final JComboBox<String> projectOwnerCombobox = new JComboBox<>();
-    private final ProjectCreateDelegate cpd;
 
     ProjectCreatePanel(ProjectCreateDelegate parentSender) {
         super(parentSender);
-        cpd = parentSender;
         try {
             User[] productOwner = sendMessage(new Packet(API.GET_USERS_BY_TYPES, UsersTypes.PRODUCT_OWNER)).getArrayOfArgs(User[].class);
             ArrayList<String> poNames = new ArrayList<>();
@@ -124,7 +122,7 @@ public class ProjectCreatePanel extends Panel {
         if (checkProjectParams()) {
             try {
                 if ((Boolean) sendMessage(new Packet(API.ADD_PROJECTS, projectTextField.getText(), projectOwnerCombobox.getSelectedItem())).arguments[0]) {
-                    cpd.projectCreated(projectTextField.getText());
+                    ((ProjectCreateDelegate)getParentSender()).projectCreated(projectTextField.getText());
                 } else
                     showError("Неудаеться создать проект с такими параметрами.");
             } catch (Exception e) {
