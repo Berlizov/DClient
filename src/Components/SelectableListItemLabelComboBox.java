@@ -35,7 +35,6 @@ public class SelectableListItemLabelComboBox extends SelectableListItemComboBox{
                                 .addComponent(label, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap(0, Short.MAX_VALUE))
         );
-        setModel(model);
     }
     public void setSecondLabelVisible(Boolean t)
     {

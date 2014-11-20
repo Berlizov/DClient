@@ -94,10 +94,10 @@ public class ProjectPanel extends LeftRightPanel implements TaskPanelDelegate {
     }
 
     @Override
-    public void openTaskPanel(String task) {
+    public void openTaskPanel(String task,final Panel p) {
         rightPanel.removeAll();
-        TaskPanel uap = new TaskPanel(projectName,task,this);
-        uap.setBackground(rightPanel.getBackground());
+        TaskPanel taskPanel = new TaskPanel(projectName,task,type,this);
+        taskPanel.setBackground(rightPanel.getBackground());
 
         CButton button = new CButton();
         button.setIcon(new ImageIcon("img/Back.png"));
@@ -106,15 +106,10 @@ public class ProjectPanel extends LeftRightPanel implements TaskPanelDelegate {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showDefButtons();
-                for (CButton leftButton : leftButtons) {
-                    if (leftButton.isSelected()) {
-                        leftButton.doClick();
-                        break;
-                    }
-                }
+                openPanel(p);
             }
         });
-        openPanel(uap);
+        openPanel(taskPanel);
         leftPanel.removeAll();
         leftPanel.add(button);
         updatePanels();

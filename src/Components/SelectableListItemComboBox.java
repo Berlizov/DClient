@@ -33,7 +33,9 @@ public class SelectableListItemComboBox extends SelectableListItem{
         );
         setModel(model);
     }
-
+    public void setComboBoxEnabled(boolean b){
+        combo.setEnabled(b);
+    }
     public void selectItem(String item){
         combo.setSelectedItem(item);
     }

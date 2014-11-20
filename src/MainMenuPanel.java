@@ -129,7 +129,7 @@ public class MainMenuPanel extends LeftRightPanel implements ProjectCreateDelega
                     }
                 }
             }
-            leftPanel.revalidate();
+            updatePanels();
     }
 
     private void addProject(String name) {

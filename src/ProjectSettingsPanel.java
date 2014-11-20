@@ -316,10 +316,13 @@ public class ProjectSettingsPanel extends Panel {
             if (tasks != null) {
                 for (Task task : tasks) {
                     final SelectableListItemLabelComboBox l = new SelectableListItemLabelComboBox(task.getName(),task.getUserComplexity().toString(), PokerCardDeck.getModel(),task.getComplexity().toString(), false);
-                    if(task.getComplexity()!=PokerCardDeck.NOTSET)
+                    if((task.getComplexity()!=PokerCardDeck.NOTSET)||(task.getUserComplexity()==PokerCardDeck.NOTSET))
                     {
                         l.setSecondLabelVisible(false);
+
                     }
+
+                    l.setSelectable(false);
                     l.setSecondLabelColor(Constants.MINOR_TEXT_COLOR);
                     l.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
                     l.setMinimumSize(new Dimension(Integer.MIN_VALUE, 60));
@@ -405,7 +408,7 @@ public class ProjectSettingsPanel extends Panel {
     }
 
     private void openTaskPanel(String taskName){
-        ((TaskPanelDelegate)getParentSender()).openTaskPanel(taskName);
+        ((TaskPanelDelegate)getParentSender()).openTaskPanel(taskName,this);
     }
 
     @Override
