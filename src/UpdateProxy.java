@@ -28,7 +28,11 @@ public class UpdateProxy extends Thread {
                     }
                 } else {
                     if (cc != null) {
-                        cc.packetArrayList.add(pack);
+                        synchronized (cc.packetArrayList){
+                            cc.packetArrayList.add(pack);
+                            cc.packetArrayList.notifyAll();
+                            System.out.println();
+                        }
                     }
                 }
             } while (true);

@@ -1,3 +1,5 @@
+import sun.font.TrueTypeFont;
+
 import javax.xml.bind.JAXBException;
 import java.io.*;
 import java.net.Socket;
@@ -46,29 +48,37 @@ public class ClientConnector extends Thread implements UpdateInterface {
                 packet = readMessage(packet.func);
                 return packet;
             } catch (IOException e) {
-                connect();
+                if(packet.func!=API.LOGIN)
+                    connect();
                 tries++;
             }
         }
         throw new IOException();
     }
 
+
     private Packet readMessage(API func) throws IOException {
-        Packet pack;
+        Packet pack=new Packet(func);
         if (!c.isAlive())
             throw new IOException();
-        do {
-            synchronized (packetArrayList) {
-                if (packetArrayList.size() > 0) {
-                    pack = packetArrayList.get(0);
-                    packetArrayList.remove(0);
-                    if (pack.func == func)
+        try{
+        synchronized (packetArrayList) {
+                packetArrayList.wait();
+                boolean f=true;
+                for (int i = 0; i < packetArrayList.size(); i++) {
+                    pack=packetArrayList.get(i);
+                    if(pack.func == func){
+                        packetArrayList.remove(pack);
+                        f= false;
                         break;
-                    else
-                        packetArrayList.add(pack);
+                    }
                 }
-            }
-        } while (true);
+            if(f)
+                throw new IOException();
+        }
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
         return pack;
     }
 
@@ -78,8 +88,8 @@ public class ClientConnector extends Thread implements UpdateInterface {
         }
     }
 
-    public void close(){
-        if(c!=null)
+    public void close() {
+        if (c != null)
             c.interrupt();
     }
 

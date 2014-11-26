@@ -7,7 +7,7 @@ import java.awt.*;
  * Created by 350z6233 on 19.11.2014.
  */
 public class SelectableListItemLabelComboBox extends SelectableListItemComboBox{
-    JLabel label=new JLabel();
+    private final JLabel label=new JLabel();
     public SelectableListItemLabelComboBox(String text, String secondText, String[] model, String selectedV, boolean showCheckBox) {
         super(text, model, selectedV, showCheckBox);
         GroupLayout layout = new GroupLayout(this);
